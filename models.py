@@ -25,10 +25,12 @@ class Stations(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(255))
 	abbr = db.Column(db.String(255))
+	version = db.Column(db.Integer)
 
-	def __init__(self, name, abbr):
+	def __init__(self, name, abbr, version):
 		self.name = name
 		self.abbr = abbr
+		self.version = version
 
 if __name__ == "__main__":
 	manager.run()
