@@ -32,5 +32,25 @@ class Stations(db.Model):
 		self.abbr = abbr
 		self.version = version
 
+class Schedule(db.Model):
+
+	__tablename__ = "schedule"
+
+	id = db.Column(db.Integer, primary_key=True)
+	departure = db.Column(db.String(255))
+	to = db.Column(db.String(255))
+	track = db.Column(db.String(255))
+	line = db.Column(db.String(255))
+	train = db.Column(db.String(255))
+	status = db.Column(db.String(255))
+
+	def __init__(self, departure, to, track, line, train, status):
+		self.departure = departure
+		self.to = to
+		self.track = track
+		self.line = line
+		self.train = train
+		self.status = status
+
 if __name__ == "__main__":
 	manager.run()
