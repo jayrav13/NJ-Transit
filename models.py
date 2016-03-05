@@ -3,7 +3,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 
-from sqlalchemy import Column, Integer, String, Float, Text
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
 
@@ -26,6 +26,7 @@ class Stations(db.Model):
 	name = db.Column(db.String(255))
 	abbr = db.Column(db.String(255))
 	version = db.Column(db.Integer)
+	schedules = relationship("Schedule", backref="stations", single_parent=True, cascade="all, delete-orphan", primaryjoin=("Stations.id==Schedule.station_id"))
 
 	def __init__(self, name, abbr, version):
 		self.name = name
@@ -43,6 +44,7 @@ class Schedule(db.Model):
 	line = db.Column(db.String(255))
 	train = db.Column(db.String(255))
 	status = db.Column(db.String(255))
+	station_id = db.Column(db.Integer, ForeignKey("stations.id"))
 
 	def __init__(self, departure, to, track, line, train, status):
 		self.departure = departure
@@ -51,6 +53,18 @@ class Schedule(db.Model):
 		self.line = line
 		self.train = train
 		self.status = status
+
+class Requests(db.Model):
+
+	__tablename__ = "requests"
+
+	id = db.Column(db.Integer, primary_key=True)
+	url = db.Column(db.String(255))
+	time = db.Column(db.Float)
+
+	def __init__(self, url, time):
+		self.url = url
+		self.time = time
 
 if __name__ == "__main__":
 	manager.run()
