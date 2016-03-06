@@ -11,6 +11,7 @@ import keys
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = keys.get_mysql_uri()
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
 
@@ -25,13 +26,11 @@ class Stations(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(255))
 	abbr = db.Column(db.String(255))
-	version = db.Column(db.Integer)
 	schedules = relationship("Schedule", backref="stations", single_parent=True, cascade="all, delete-orphan", primaryjoin=("Stations.id==Schedule.station_id"))
 
-	def __init__(self, name, abbr, version):
+	def __init__(self, name, abbr):
 		self.name = name
 		self.abbr = abbr
-		self.version = version
 
 class Schedule(db.Model):
 
