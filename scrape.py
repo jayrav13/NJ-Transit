@@ -18,6 +18,13 @@ for val in stations_tree.xpath('//option'):
 
 html_parser = HTMLParser.HTMLParser()
 
+# Get new version number for upcoming iteration of scraping all stations data
+version = db.session.query(db.func.max(Requests.version)).scalar()
+if version == None:
+	version = 0
+
+version = version + 1
+
 # For each station
 for station in Stations.query.all():
 
@@ -35,9 +42,8 @@ for station in Stations.query.all():
 				schedule = Schedule(values[0], values[1], values[2], values[3], values[4], values[5])
 				station.schedules.append(schedule)
 				print values
-				db.session.commit()
-		
-		db.session.add(Requests(url, request_time))
-		db.session.commit()
+	
+		db.session.add(Requests(url, request_time, version))
 
+db.session.commit()
 print "Success."

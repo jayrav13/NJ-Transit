@@ -3,10 +3,11 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 
-from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey, DateTime
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
 
+import datetime
 import keys
 
 app = Flask(__name__)
@@ -44,6 +45,7 @@ class Schedule(db.Model):
 	train = db.Column(db.String(255))
 	status = db.Column(db.String(255))
 	station_id = db.Column(db.Integer, ForeignKey("stations.id"))
+	timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
 	def __init__(self, departure, to, track, line, train, status):
 		self.departure = departure
@@ -60,10 +62,13 @@ class Requests(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	url = db.Column(db.String(255))
 	time = db.Column(db.Float)
+	timestamp = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+	version = db.Column(db.Integer)
 
-	def __init__(self, url, time):
+	def __init__(self, url, time, version):
 		self.url = url
 		self.time = time
+		self.version = version
 
 if __name__ == "__main__":
 	manager.run()
