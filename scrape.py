@@ -5,6 +5,7 @@ import sys
 import HTMLParser
 import re
 import time
+import os
 
 # Request all stations, parse into html tree
 stations_page = requests.get('http://m.njtransit.com/mo/mo_servlet.srv?hdnPageAction=DvTo')
@@ -46,4 +47,7 @@ for station in Stations.query.all():
 		db.session.add(Requests(url, request_time, version))
 
 db.session.commit()
+
+
+
 print "Success."
